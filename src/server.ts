@@ -5,7 +5,8 @@ import prisma from './config/prisma.js';
 const port = process.env.PORT || 3000;
 const startServer = async ():Promise<void> => {
     try {
-        await prisma.$connect
+        await prisma.$connect();
+
             app.listen(port, ()=>{
             console.log(`GiftMatch server running on port ${port}`);
         });
@@ -16,4 +17,5 @@ const startServer = async ():Promise<void> => {
         
     }
 }
+startServer();
 

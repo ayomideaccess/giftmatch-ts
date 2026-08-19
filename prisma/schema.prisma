@@ -1,13 +1,83 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+model Admin {
+  id                     Int       @id @default(autoincrement())
+  firstName              String
+  lastName               String
+  email                  String    @unique
+  phoneNo                String
+  password               String
+  otp                    String?
+  otpExpiry              DateTime?
+  isVerified             Boolean   @default(false)
+  passwordResetOTP       String?
+  passwordResetOTPExpiry DateTime?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  events Event[]
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  startDate   DateTime
+  deadline    DateTime
+  createdById Int
+
+  createdBy       Admin            @relation(fields: [createdById], references: [id])
+  participants    Participant[]
+  specialRequests SpecialRequest[]
+  picks           Pick[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Participant {
+  id       Int     @id @default(autoincrement())
+  name     String
+  isPicked Boolean @default(false)
+  eventId  Int
+
+  event     Event    @relation(fields: [eventId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  picks     Pick[]
+}
+
+model Pick {
+  id                  Int    @id @default(autoincrement())
+  eventId             Int
+  pickerName          String
+  pickedParticipantId Int
+  pickedName          String
+
+  event             Event       @relation(fields: [eventId], references: [id])
+  pickedParticipant Participant @relation(fields: [pickedParticipantId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SpecialRequest {
+  id          Int    @id @default(autoincrement())
+  eventId     Int
+  name        String
+  emailAdd    String
+  phone       String
+  wantToGift  String
+  description String
+
+  event Event @relation(fields: [eventId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
