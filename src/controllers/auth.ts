@@ -1,11 +1,11 @@
-import { type Request, type Response } from "express";
+ import { type Request, type Response } from "express";
 import bcrypt from 'bcrypt';
 import { sendOTPEmail, sendPasswordResetEmail } from '../services/email.service.js';
 import { generateOTP } from '../services/otp.service.js';
 import AppError from '../utils/AppError.js';
 import { generateAccessToken,generateRefreshToken } from '../utils/generateToken.js';
 import jwt, { type JwtPayload } from 'jsonwebtoken';
-import { prismaClient } from "../app.js";
+import prismaClient from '../config/prisma.js';
 import { hashSync, compareSync } from "bcrypt";
 
 const registerAdmin = async (req: Request, res: Response) => {
@@ -22,7 +22,7 @@ const registerAdmin = async (req: Request, res: Response) => {
   const otp = generateOTP();
   const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
 
-  await prismaClient.user.create({
+  await prismaClient.admin.create({
     data: {
       firstName,
       lastName,
@@ -41,7 +41,7 @@ const registerAdmin = async (req: Request, res: Response) => {
     message: "User registered successfully. Check your email for OTP."
   });
 };
-
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzg3NTg3NjM5LCJleHAiOjE3ODc1ODk0Mzl9.iWIyjNfg831qt7MLhemnCmp4yibNqJAFk-XUxyjM0m0
 
 const verifyOTP = async (req: Request, res: Response): Promise<void> => {
   const { email, otp } = req.body;
@@ -58,7 +58,7 @@ const verifyOTP = async (req: Request, res: Response): Promise<void> => {
     throw new AppError('Invalid OTP', 400);
   }
 
-  if (new Date(targetAdmin.otpExpiry) < new Date()) {
+  if (!targetAdmin.otpExpiry || new Date(targetAdmin.otpExpiry) < new Date()) {
     throw new AppError('OTP expired', 400);
   }
 
@@ -94,7 +94,7 @@ const loginUser = async (
     throw new AppError('Email not verified', 400);
   }
 
-  if (!compareSync(password, user.password)){
+  if (!compareSync(password, targetAdmin.password)){
     throw Error("Incorrect password")
   }
   const accessToken = generateAccessToken(targetAdmin.id);
@@ -132,7 +132,7 @@ const forgottenPassword = async (
 ): Promise<void> => {
   const { email } = req.body;
 
-  const admin = await prismaClient.user.findUnique({
+  const admin = await prismaClient.admin.findUnique({
     where: {
       email,
     },
@@ -148,7 +148,7 @@ const forgottenPassword = async (
     Date.now() + 10 * 60 * 1000
   );
 
-  await prismaClient.user.update({
+  await prismaClient.admin.update({
     where: {
       id: admin.id,
     },
@@ -232,4 +232,8 @@ export {
   registerAdmin,
   verifyOTP,
   loginUser,
+  logoutUser,
+  forgottenPassword,
+  resendOTP,
+  refreshToken
 }

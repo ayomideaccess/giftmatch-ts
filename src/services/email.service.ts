@@ -48,3 +48,42 @@ export const sendPasswordResetEmail = async (
     `,
   });
 };
+
+export const sendSpecialRequestEmail = async (
+  email: string, 
+  requesterName: string, 
+  wantToGift: string, 
+  reason: string, 
+  phone: string, 
+  emailAdd: string
+): Promise<void>=>{
+    await transporter.sendMail({
+        from: `"GiftMatch" <${process.env.GMAIL_USER}>`,
+        to: email,
+        subject: 'Special Request Received',
+        html: `
+        <h2>New Special Request🎁</h2>
+        <p><strong>From:</strong>${requesterName}</p>
+        <p><strong>Want to Gift:</strong>${wantToGift}</p>
+        <p><strong>Reason:</strong>${reason}</p>
+        <p><strong>Phone:</strong>${phone}</p>
+        <p><strong>Email:</strong>${emailAdd}</p>
+        `
+    });
+};
+
+export const sendEventCompletionEmail = async (
+  email: string, 
+  eventName: string
+): Promise<void>=>{
+    await transporter.sendMail({
+        from: `"GiftMatch" <${process.env.GMAIL_USER}>`,
+        to: email,
+        subject: 'Event Completed Successfully🎉',
+        html: `
+        <h2>All participants have picked!🎉</h2>
+        <p>Your event <strong>${eventName}</strong> is now complete.</p>
+        <p>Login to your dashboard to view the results.</p>
+        `
+});
+};

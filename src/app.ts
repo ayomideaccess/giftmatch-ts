@@ -1,6 +1,7 @@
 import express, { type Express, type Request, type Response } from 'express';
 import rootRouter from './routes/root.js';
 import { PrismaClient } from './generated/prisma/index.js';
+import prismaClient from './config/prisma.js';
 
 const app: Express = express();
 app.use(express.json());
@@ -13,8 +14,5 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use('/', rootRouter);
 
-export const prismaClient = new PrismaClient({
-    log: ['query']
-})
 
 export default app;

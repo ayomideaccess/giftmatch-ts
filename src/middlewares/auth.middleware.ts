@@ -1,8 +1,6 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import jwt, { type JwtPayload } from 'jsonwebtoken';
-import { PrismaClient } from '../generated/prisma/client.js';
-
-const prisma = new PrismaClient();
+import prismaClient from '../config/prisma.js';
 
 export const protect = async (
   req: Request,
@@ -11,7 +9,6 @@ export const protect = async (
 ): Promise<void> => {
   try {
     const accessToken = req.headers.authorization?.split(' ')[1];
-    const db = prisma as any;
 
     if (!accessToken) {
       res.status(401).json({
@@ -25,7 +22,7 @@ export const protect = async (
       process.env.ACCESS_TOKEN_SECRET as string
     ) as JwtPayload & { id: number };
 
-    const admin = await db.admin.findUnique({
+    const admin = await prismaClient.admin.findUnique({
       where: {
         id: decoded.id,
       },
