@@ -16,6 +16,9 @@ export const sendOTPEmail = async (
   email: string,
   otp: string
 ): Promise<void> => {
+  if (process.env.NODE_ENV === "test") {
+  return;
+}
   await transporter.sendMail({
     from: `"GiftMatch" <${process.env.GMAIL_USER}>`,
     to: email,
@@ -34,6 +37,9 @@ export const sendPasswordResetEmail = async (
   email: string,
   passwordResetOTP: string
 ): Promise<void> => {
+  if (process.env.NODE_ENV === "test") {
+  return;
+}
   await transporter.sendMail({
     from: `"GiftMatch" <${process.env.GMAIL_USER}>`,
     to: email,
@@ -57,6 +63,9 @@ export const sendSpecialRequestEmail = async (
   phone: string, 
   emailAdd: string
 ): Promise<void>=>{
+  if (process.env.NODE_ENV === "test") {
+  return;
+}
     await transporter.sendMail({
         from: `"GiftMatch" <${process.env.GMAIL_USER}>`,
         to: email,
@@ -76,6 +85,9 @@ export const sendEventCompletionEmail = async (
   email: string, 
   eventName: string
 ): Promise<void>=>{
+  if (process.env.NODE_ENV === "test") {
+  return;
+}
     await transporter.sendMail({
         from: `"GiftMatch" <${process.env.GMAIL_USER}>`,
         to: email,

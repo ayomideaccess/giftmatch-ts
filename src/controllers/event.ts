@@ -116,6 +116,7 @@ const deleteEvent = async (req: Request, res: Response) => {
         throw new AppError("Event not found", 404);
     }
 
+    console.log("DELETE EVENT ID:", id);
     const hasPicked = await prismaClient.pick.findFirst({
         where: {
             eventId: Number(id),
