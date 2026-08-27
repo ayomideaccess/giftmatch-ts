@@ -9,7 +9,7 @@
     "type-check": "tsc --noEmit",
     "test": "vitest",
     "test:watch": "vitest --watch",
-    "build": "prisma generate && tsc && shx cp -r src/generated dist/generated"
+    "build": "prisma generate && tsc && cp -r src/generated dist/generated"
   },
   "type": "module",
   "keywords": [],
