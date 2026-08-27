@@ -7,9 +7,9 @@
     "dev": "tsx watch src/server.ts",
     "start": "tsx src/server.ts",
     "type-check": "tsc --noEmit",
-    "build": "tsc",
     "test": "vitest",
-    "test:watch": "vitest --watch"
+    "test:watch": "vitest --watch",
+     "build": "prisma generate && tsc"
   },
   "type": "module",
   "keywords": [],
