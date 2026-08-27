@@ -9,7 +9,7 @@
     "type-check": "tsc --noEmit",
     "test": "vitest",
     "test:watch": "vitest --watch",
-     "build": "prisma generate && tsc"
+    "build": "prisma generate && tsc && shx cp -r src/generated dist/generated"
   },
   "type": "module",
   "keywords": [],
@@ -23,6 +23,7 @@
     "@types/nodemailer": "^8.0.1",
     "@types/supertest": "^7.2.1",
     "nodemon": "^3.1.14",
+    "shx": "^0.4.0",
     "supertest": "^7.2.2",
     "ts-node": "^10.9.2",
     "tsx": "^4.23.12",
