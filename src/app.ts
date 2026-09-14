@@ -5,16 +5,19 @@ import { PrismaClient } from './generated/prisma/index.js';
 import prismaClient from './config/prisma.js';
 import errorHandler from "./middlewares/errorHandler.js";
 import cookieParser from "cookie-parser";
+import cors from 'cors';
+
+// uhbgjvfgcdxw
 
 const app: Express = express();
 app.use(express.json());
 app.use(cookieParser());
-
-app.get('/', (req: Request, res: Response) => {
-    res.status(200).json({
-        message: 'GiftMatch API is running',
-    });
-});
+app.use(cors({
+    origin: "https://giftmatch-eight.vercel.app/#",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true
+}))
 
 app.get('/ping', (req: Request, res: Response) => {
     res.status(200).json({
