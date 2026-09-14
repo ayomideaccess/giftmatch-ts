@@ -13,12 +13,11 @@ const app: Express = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: "https://giftmatch-eight.vercel.app/#",
+    origin: "https://giftmatch-eight.vercel.app",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
 }));
-app.options('*', cors());
 
 app.get('/ping', (req: Request, res: Response) => {
     res.status(200).json({
