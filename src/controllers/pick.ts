@@ -61,12 +61,24 @@ const identifyParticipant = async (req: Request, res: Response) => {
 };
 
 const makePick = async (req: Request, res: Response) => {
-  const { eventId } = req.params;
-  const { pickerName, pickedParticipantId, pickedName } = req.body;
+  const { eventId, pickerId } = req.params;
+  const { pickedParticipantId, pickedName } = req.body;
+
+  const parsedEventId = Number(eventId);
+  const parsedPickerId = Number(pickerId);
+  const parsedPickedParticipantId = Number(pickedParticipantId);
+
+  if (
+    !Number.isInteger(parsedEventId) ||
+    !Number.isInteger(parsedPickerId) ||
+    !Number.isInteger(parsedPickedParticipantId)
+  ) {
+    throw new AppError("Invalid ID provided", 400);
+  }
 
   const event = await prismaClient.event.findUnique({
     where: {
-      id: Number(eventId),
+      id: parsedEventId,
     },
   });
 
@@ -87,10 +99,7 @@ const makePick = async (req: Request, res: Response) => {
   const pickerExists = await prismaClient.participant.findFirst({
     where: {
       eventId: event.id,
-      name: {
-        equals: pickerName,
-        mode: "insensitive",
-      },
+      id: parsedPickerId,
     },
   });
 
@@ -114,7 +123,7 @@ const makePick = async (req: Request, res: Response) => {
 
   const targetParticipant = await prismaClient.participant.findFirst({
     where: {
-      id: pickedParticipantId,
+      id: parsedPickedParticipantId,
       eventId: event.id,
     },
   });
@@ -125,7 +134,7 @@ const makePick = async (req: Request, res: Response) => {
 
   if (
     targetParticipant.name.toLowerCase() !==
-    pickedName.toLowerCase()
+    pickedName.trim().toLowerCase()
   ) {
     throw new AppError(
       "Picked participant ID and name do not match",
@@ -191,19 +200,19 @@ const makePick = async (req: Request, res: Response) => {
     });
 
     if (admin) {
-      const now = new Date()
       await sendEventCompletionEmail(
         admin.email,
         event.title
       );
+
       await prismaClient.event.update({
-      where: {
-        id: event.id,
-      },
-      data: {
-        deadline: now,
-      },
-    });
+        where: {
+          id: event.id,
+        },
+        data: {
+          deadline: new Date(),
+        },
+      });
     }
   }
 
