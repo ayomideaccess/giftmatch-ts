@@ -36,6 +36,7 @@ const getAllEvents = async (req: Request, res: Response) => {
             createdById: req.admin!.id
         },
         include: {
+            participants: true,
             createdBy: {
                 select: {
                     firstName: true,
@@ -61,6 +62,7 @@ const getEventById = async (req: Request, res: Response) => {
             id: Number(id)
         },
         include: {
+            participants: true,
             createdBy: {
                 select: {
                     firstName: true,
