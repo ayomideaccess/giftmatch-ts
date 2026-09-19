@@ -9,7 +9,7 @@ import { createEvent, getAllEvents, getEventById, updateEvent, deleteEvent } fro
 
 eventRoutes.post('/', protect, validate(createEventSchema), createEvent);
 eventRoutes.get('/all', protect, getAllEvents);
-eventRoutes.get('/:id', protect, getEventById);
+eventRoutes.get('/:id', getEventById);
 eventRoutes.patch('/:id', protect, updateEvent);
 eventRoutes.delete('/:id', protect, deleteEvent);
 
